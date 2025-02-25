@@ -1,0 +1,256 @@
+//Clase Pokémon
+package JuegoClases;
+abstract class Pokemon {
+    protected String nombre;
+    protected int vida;
+    protected int defensaEsp;
+    protected int defensa;
+    protected int ataque;
+    protected int ataqueEsp;
+    protected String tipo;
+    
+
+    public Pokemon(String nombre, int vida, int defensaEsp, int defensa, int ataque, int ataqueEsp, String tipo) {
+        this.nombre = nombre;
+        this.vida = vida;
+        this.defensaEsp = defensaEsp;
+        this.defensa = defensa;
+        this.ataque = ataque;
+        this.ataqueEsp = ataqueEsp;
+        this.tipo = tipo;
+    }
+
+    public abstract void ataqueEspecial(Pokemon enemigo);
+
+    public void atacar(Pokemon enemigo) {
+        int bonificacion = calcularBonificacion(enemigo.tipo);
+        int danio = Math.max((ataque + bonificacion) - enemigo.defensa, 0);
+        System.out.println(nombre + " ataca a " + enemigo.getNombre() + " y causa " + danio + " de daño.");
+        enemigo.recibirDanio(danio);
+    }
+
+    public void recibirDanio(int danio) {
+        vida -= danio;
+        if (vida < 0) vida = 0;
+    }
+
+    public boolean estaVivo() {
+        return vida > 0;
+    }
+    
+    public String getNombre() {
+        return nombre;
+    }
+    
+    public int getVida() {
+        return vida;
+    }
+
+    public void mostrarDatos() {
+        System.out.println("\nNombre: " + nombre + "\nVida: " + vida + "\nDefensa Especial: " + defensaEsp +
+                "\nDefensa: " + defensa + "\nAtaque: " + ataque + "\nAtaque Especial: " + ataqueEsp + "\nTipo: " + tipo);
+    }
+
+    private int calcularBonificacion(String tipoEnemigo) {
+        if ((this.tipo.equals("Fuego") && tipoEnemigo.equals("Planta")) ||
+            (this.tipo.equals("Agua") && tipoEnemigo.equals("Fuego")) ||
+            (this.tipo.equals("Planta") && tipoEnemigo.equals("Agua"))) {
+            return 10;
+        }
+        return 0;
+    }
+}
+
+
+//Clase Objeto
+class Objeto {
+    private String nombre;
+    private String tipo;
+    private int valor;
+
+    public Objeto(String nombre, String tipo, int valor) {
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.valor = valor;
+    }
+
+    public void usar(Pokemon pokemon) {
+        switch (tipo) {
+            case "Curación" -> {
+                pokemon.vida += valor;
+                System.out.println(pokemon.getNombre() + " ha recuperado " + valor + " puntos de vida!");
+            }
+            case "Ataque" -> {
+                pokemon.ataque += valor;
+                System.out.println(pokemon.getNombre() + " ha aumentado su ataque en " + valor + " puntos!");
+            }
+            case "Defensa" -> {
+                pokemon.defensa += valor;
+                System.out.println(pokemon.getNombre() + " ha aumentado su defensa en " + valor + " puntos!");
+            }
+        }
+    }
+}
+
+//Clase Snivy
+
+class Snivy extends Pokemon {
+    public Snivy() {
+        super("Snivy", 100, 20, 15, 20, 25, "Planta");
+    }
+    
+    public void ataqueEspecial(Pokemon enemigo) {
+        int danio = Math.max(ataque - enemigo.defensaEsp, 0);
+        System.out.println(nombre + " usa hoja afilada a  " + enemigo.getNombre() + " y causa " + danio + " de daño.");
+        enemigo.recibirDanio(ataqueEsp);
+    }
+}
+
+//Clase Chimchar
+
+class Chimchar extends Pokemon {
+    public Chimchar() {
+        super("Chimchar", 90, 15, 10, 25, 30, "Fuego");
+    }
+    
+    public void ataqueEspecial(Pokemon enemigo) {
+        
+        int danio = Math.max(ataque - enemigo.defensaEsp, 0);
+        System.out.println(nombre + " usa ascuas a  " + enemigo.getNombre() + " y causa " + danio + " de daño.");
+        enemigo.recibirDanio(ataqueEsp);
+    }
+}
+
+//Clase Squirtle
+
+class Squirtle extends Pokemon {
+    public Squirtle() {
+        super("Squirtle", 110, 25, 20, 15, 20, "Agua");
+    }
+    
+    public void ataqueEspecial(Pokemon enemigo) {
+        int danio = Math.max(ataque - enemigo.defensaEsp, 0);
+        System.out.println(nombre + " usa pistola de agua a  " + enemigo.getNombre() + " y causa " + danio + " de daño.");
+        enemigo.recibirDanio(ataqueEsp);
+    }
+}
+
+//Clases de los enemigos:
+
+class Jigglypuff extends Pokemon {
+    public Jigglypuff() {
+        super("Jigglypuff", 80, 15, 10, 15, 10, "Normal");
+    }
+    
+    public void ataqueEspecial(Pokemon enemigo) {
+        System.out.println(nombre + " usa Canto!");
+    }
+}
+class Caterpie extends Pokemon {
+    public Caterpie() {
+        super("Caterpie", 50, 10, 5, 10, 5, "Bicho");
+    }
+    
+    public void ataqueEspecial(Pokemon enemigo) {
+        System.out.println(nombre + " usa Placaje!");
+        enemigo.recibirDanio(ataqueEsp);
+    }
+}
+class Torterra extends Pokemon {
+    public Torterra() {
+        super("Torterra", 150, 30, 20, 30, 20, "Planta");
+    }
+    
+    public void ataqueEspecial(Pokemon enemigo) {
+        System.out.println(nombre + " usa Terremoto!");
+        enemigo.recibirDanio(ataqueEsp);
+    }
+}
+class Mewtwo extends Pokemon {
+    public Mewtwo() {
+        super("Mewtwo", 200, 50, 30, 50, 40, "Psiquico");
+    }
+    
+    public void ataqueEspecial(Pokemon enemigo) {
+        System.out.println(nombre + " usa Psíquico!");
+        enemigo.recibirDanio(ataqueEsp);
+    }
+}
+
+
+//Juego
+
+import java.util.Scanner;
+
+public class Juego {
+    private Pokemon jugador;
+    private Scanner sc = new Scanner(System.in);
+
+    public void elegirPokemon() {
+        System.out.println("Elige tu Pokémon inicial:");
+        System.out.println("1. Snivy");
+        System.out.println("2. Chimchar");
+        System.out.println("3. Squirtle");
+        int opcion = sc.nextInt();
+        jugador = switch (opcion) {
+            case 1 -> new Snivy();
+            case 2 -> new Chimchar();
+            case 3 -> new Squirtle();
+            default -> new Snivy();
+        };
+        System.out.println("Has elegido a " + jugador.getNombre());
+    }
+
+    public void iniciarCombate() {
+        Pokemon[] enemigos = {new Caterpie(), new Jigglypuff(), new Torterra(), new Mewtwo()};
+        for (Pokemon enemigo : enemigos) {
+            System.out.println("Te enfrentas a " + enemigo.getNombre());
+            while (jugador.estaVivo() && enemigo.estaVivo()) {
+                System.out.println("\n1. Atacar\n2. Ataque Especial\n3. Usar objeto\n4. Ver estadísticas\n5. Huir");
+                int opcion = sc.nextInt();
+                switch (opcion) {
+                    case 1 -> jugador.atacar(enemigo);
+                    case 2 -> jugador.ataqueEspecial(enemigo);
+                    case 3 -> {
+                        System.out.println("Elige un objeto:\n1. Poción (Cura 30 HP)\n2. Aumento de Ataque (+5)\n3. Aumento de Defensa (+5)");
+                        int eleccion = sc.nextInt();
+                        Objeto objeto = switch (eleccion) {
+                            case 1 -> new Objeto("Poción", "Curación", 30);
+                            case 2 -> new Objeto("Aumento de Ataque", "Ataque", 5);
+                            case 3 -> new Objeto("Aumento de Defensa", "Defensa", 5);
+                            default -> null;
+                        };
+                        if (objeto != null) objeto.usar(jugador);
+                    }
+                    case 4 -> {
+                        System.out.println("\n--- Estadísticas de tu Pokémon ---");
+                        jugador.mostrarDatos();
+                        System.out.println("\n--- Estadísticas del enemigo ---");
+                        enemigo.mostrarDatos();
+                    }
+                    case 5 -> {
+                        System.out.println("Has huido del combate.");
+                        return;
+                    }
+                    default -> System.out.println("Opción no válida.");
+                }
+                if (enemigo.estaVivo()) {
+                    enemigo.atacar(jugador);
+                }
+            }
+            if (!jugador.estaVivo()) {
+                System.out.println("Has sido derrotado. Fin del juego.");
+                return;
+            }
+            System.out.println("Has derrotado a " + enemigo.getNombre());
+        }
+        System.out.println("¡Has vencido a todos los enemigos! Eres el campeón.");
+    }
+
+    public static void main(String[] args) {
+        Juego juego = new Juego();
+        juego.elegirPokemon();
+        juego.iniciarCombate();
+    }
+}
+
