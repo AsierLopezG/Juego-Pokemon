@@ -8,7 +8,7 @@ abstract class Pokemon {
     protected int ataque;
     protected int ataqueEsp;
     protected String tipo;
-    
+    protected boolean proteccionActiva = false;
 
     public Pokemon(String nombre, int vida, int defensaEsp, int defensa, int ataque, int ataqueEsp, String tipo) {
         this.nombre = nombre;
@@ -18,6 +18,15 @@ abstract class Pokemon {
         this.ataque = ataque;
         this.ataqueEsp = ataqueEsp;
         this.tipo = tipo;
+    
+    }
+
+    public void protegerse() {
+        this.proteccionActiva = true;
+        System.out.println(this.nombre + " se protege! No recibirá daño en este turno.");
+    }
+    public void desactivarProteccion() {
+        this.proteccionActiva = false;
     }
 
     public abstract void ataqueEspecial(Pokemon enemigo);
@@ -60,7 +69,6 @@ abstract class Pokemon {
         return 0;
     }
 }
-
 
 //Clase Objeto
 class Objeto {
@@ -206,11 +214,12 @@ public class Juego {
         for (Pokemon enemigo : enemigos) {
             System.out.println("Te enfrentas a " + enemigo.getNombre());
             while (jugador.estaVivo() && enemigo.estaVivo()) {
-                System.out.println("\n1. Atacar\n2. Ataque Especial\n3. Usar objeto\n4. Ver estadísticas\n5. Huir");
+                System.out.println("\n1. Atacar\n2. Ataque Especial\n3. Usar objeto\n4. Ver estadísticas\n5.Protegerse.\n6.Huir");
                 int opcion = sc.nextInt();
                 switch (opcion) {
                     case 1 -> jugador.atacar(enemigo);
                     case 2 -> jugador.ataqueEspecial(enemigo);
+
                     case 3 -> {
                         System.out.println("Elige un objeto:\n1. Poción (Cura 30 HP)\n2. Aumento de Ataque (+5)\n3. Aumento de Defensa (+5)");
                         int eleccion = sc.nextInt();
@@ -228,7 +237,10 @@ public class Juego {
                         System.out.println("\n--- Estadísticas del enemigo ---");
                         enemigo.mostrarDatos();
                     }
-                    case 5 -> {
+                    case 5 ->{
+                        jugador.protegerse();
+                    }
+                    case 6 -> {
                         System.out.println("Has huido del combate.");
                         return;
                     }
@@ -236,6 +248,7 @@ public class Juego {
                 }
                 if (enemigo.estaVivo()) {
                     enemigo.atacar(jugador);
+                    jugador.desactivarProteccion();
                 }
             }
             if (!jugador.estaVivo()) {
@@ -253,4 +266,6 @@ public class Juego {
         juego.iniciarCombate();
     }
 }
+
+
 
